@@ -17,6 +17,21 @@ enum TypographyVariant {
   'c2',
 }
 
+enum TypographyColor {
+  'primary-main',
+  'primary-typo',
+  'warning',
+  'success',
+  'danger',
+  'secondary',
+  'icon',
+  'inline',
+  'outline',
+  'light',
+  'surface',
+  'white',
+}
+
 enum FontWeight {
   'regular',
   'medium',
@@ -28,6 +43,7 @@ type TypographyProps<T extends React.ElementType> = {
   as?: T;
   className?: string;
   weight?: keyof typeof FontWeight;
+  color?: keyof typeof TypographyColor;
   variant?: keyof typeof TypographyVariant;
   children: React.ReactNode;
 };
@@ -37,6 +53,7 @@ export default function Typography<T extends React.ElementType>({
   children,
   weight = 'regular',
   className,
+  color = 'primary-typo',
   variant = 'p',
   ...props
 }: TypographyProps<T> &
@@ -65,6 +82,20 @@ export default function Typography<T extends React.ElementType>({
           variant === 'btn' && ['md:text-[16px] md:leading-[24px]'],
           variant === 'c1' && ['md:text-[14px] md:leading-[24px]'],
           variant === 'c2' && ['md:text-[12px] md:leading-[24px]'],
+        ],
+        [
+          color === 'primary-main' && 'text-primary-500',
+          color === 'warning' && 'text-warning-500',
+          color === 'success' && 'text-success-500',
+          color === 'danger' && 'text-danger-500',
+          color === 'primary-typo' && 'text-typo-primary',
+          color === 'secondary' && 'text-typo-secondary',
+          color === 'icon' && 'text-typo-icon',
+          color === 'inline' && 'text-typo-inline',
+          color === 'outline' && 'text-typo-outline',
+          color === 'light' && 'text-typo-light',
+          color === 'surface' && 'text-typo-surface',
+          color === 'white' && 'text-typo-white',
         ],
         className,
       )}
