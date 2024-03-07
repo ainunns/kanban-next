@@ -5,6 +5,7 @@ import { HiEye, HiEyeOff } from 'react-icons/hi';
 
 import ErrorMessage from '@/components/forms/ErrorMessage';
 import HelperText from '@/components/forms/HelperText';
+import LabelText from '@/components/forms/LabelText';
 import Typography from '@/components/Typography';
 import clsxm from '@/lib/clsxm';
 
@@ -52,19 +53,9 @@ export default function Input({
   return (
     <div className='w-full space-y-1.5 rounded-md'>
       {label && (
-        <label htmlFor={id} className='flex space-x-1'>
-          <Typography
-            font='inter'
-            variant='c1'
-            weight='semibold'
-            className='text-sm'
-          >
-            {label}
-          </Typography>
-          {validation?.required && (
-            <Typography className='text-danger-500'>*</Typography>
-          )}
-        </label>
+        <LabelText required={validation?.required ? true : false}>
+          {label}
+        </LabelText>
       )}
 
       <div className='relative flex w-full rounded-md'>
