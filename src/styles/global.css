@@ -1,3 +1,57 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* #region  /**=========== Primary Color =========== */
+  --tw-color-primary-100: 204 241 254;
+  --tw-color-primary-200: 153 228 253;
+  --tw-color-primary-300: 102 214 251;
+  --tw-color-primary-400: 51 201 250;
+  --tw-color-primary-500: 0 187 249;
+  --tw-color-primary-600: 0 150 199;
+  --tw-color-primary-700: 0 112 149;
+  --tw-color-primary-800: 0 75 100;
+  --tw-color-primary-900: 0 37 50;
+  --color-primary-100: rgb(var(--tw-color-primary-100)); /* #CCF1FE */
+  --color-primary-200: rgb(var(--tw-color-primary-200)); /* #99E4FD */
+  --color-primary-300: rgb(var(--tw-color-primary-300)); /* #66D6FB */
+  --color-primary-400: rgb(var(--tw-color-primary-400)); /* #33C9FA */
+  --color-primary-500: rgb(var(--tw-color-primary-500)); /* #00BBF9 */
+  --color-primary-600: rgb(var(--tw-color-primary-600)); /* #0096C7 */
+  --color-primary-700: rgb(var(--tw-color-primary-700)); /* #007095 */
+  --color-primary-800: rgb(var(--tw-color-primary-800)); /* #004B64 */
+  --color-primary-900: rgb(var(--tw-color-primary-900)); /* #002532 */
+  /* #endregion  /**======== Primary Color =========== */
+}
+
+@layer utilities {
+  .animated-underline {
+    background-image: linear-gradient(#33333300, #33333300),
+      linear-gradient(
+        to right,
+        var(--color-primary-400),
+        var(--color-primary-500)
+      );
+    background-size:
+      100% 2px,
+      0 2px;
+    background-position:
+      100% 100%,
+      0 100%;
+    background-repeat: no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .animated-underline {
+      transition: 0.3s ease;
+      transition-property: background-size, color, background-color,
+        border-color;
+    }
+  }
+  .animated-underline:hover,
+  .animated-underline:focus-visible {
+    background-size:
+      0 2px,
+      100% 2px;
+  }
+}
