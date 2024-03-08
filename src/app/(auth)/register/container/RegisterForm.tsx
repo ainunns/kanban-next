@@ -2,26 +2,28 @@
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import {
+  RegisterForm,
+  useRegisterMutation,
+} from '@/app/(auth)/register/hooks/mutation';
 import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
 import { REG_EMAIL, REG_PASS, REG_USERNAME } from '@/constant/regex';
 
-type RegisterFormType = {
-  username: string;
-  name: string;
-  email: string;
-  password: string;
-};
-
 export default function RegisterForm() {
-  const methods = useForm<RegisterFormType>({
+  const methods = useForm<RegisterForm>({
     mode: 'onTouched',
   });
+
   const { handleSubmit } = methods;
 
-  const onSubmit = (data: RegisterFormType) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
+  const { handleRegister, isPending } = useRegisterMutation();
+
+  const onSubmit = (data: RegisterForm) => {
+    handleRegister({
+      ...data,
+      language: 'en',
+    });
   };
 
   return (
@@ -62,6 +64,7 @@ export default function RegisterForm() {
         />
         <Input
           id='password'
+          type='password'
           label='Password'
           placeholder='Masukkan Password'
           validation={{
@@ -73,7 +76,12 @@ export default function RegisterForm() {
           }}
           helperText='Password terdiri atas minimal 8 karakter, satu huruf besar, satu huruf kecil, satu angka, dan satu karakter spesial.'
         />
-        <Button type='submit' variant='primary' className='w-full'>
+        <Button
+          type='submit'
+          variant='primary'
+          className='w-full'
+          isLoading={isPending}
+        >
           Register
         </Button>
       </form>
