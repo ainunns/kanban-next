@@ -1,9 +1,14 @@
+import { Metadata } from 'next';
 import * as React from 'react';
 
 import RegisterForm from '@/app/(auth)/register/container/RegisterForm';
 import PrimaryLink from '@/components/links/PrimaryLink';
 import NextImage from '@/components/NextImage';
 import Typography from '@/components/Typography';
+
+export const metadata: Metadata = {
+  title: 'Register',
+};
 
 export default function RegisterPage() {
   return (
