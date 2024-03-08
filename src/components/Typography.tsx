@@ -62,7 +62,7 @@ export default function Typography<T extends React.ElementType>({
   return (
     <Component
       className={clsxm(
-        'font-primary',
+        'font-poppins',
         [
           weight === 'regular' && 'font-normal',
           weight === 'medium' && 'font-medium',
