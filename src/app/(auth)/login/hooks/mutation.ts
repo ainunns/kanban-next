@@ -32,6 +32,7 @@ export const useLoginMutation = () => {
         if (!user.data.user) {
           throw new Error('Sesi login tidak valid');
         }
+
         login({ ...user.data.user, token: accessToken });
       },
       onSuccess: () => {
