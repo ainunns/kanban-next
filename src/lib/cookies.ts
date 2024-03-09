@@ -13,3 +13,11 @@ export const setToken = (token: string) => {
 export const removeToken = () => {
   cookies.remove('@kanban/token');
 };
+
+export const setRedirect = (redirect: string) => {
+  cookies.set('@kanban/redirect', redirect);
+};
+
+export const getRedirect = () => {
+  return cookies.get('@kanban/redirect');
+};
