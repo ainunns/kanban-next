@@ -14,14 +14,14 @@ type OptionType = {
 };
 
 export default function useMutationToast<T, K>(
-  mutation: UseMutationResult<
+  mutationFn: UseMutationResult<
     AxiosResponse<ApiResponse<T>> | undefined | void,
     AxiosError<ApiError>,
     K
   >,
   customMessages: OptionType = {},
 ) {
-  const { data, isError, isPending, error } = mutation;
+  const { data, isError, isPending, error } = mutationFn;
 
   const toastStatus = React.useRef<string>(data ? 'done' : 'idle');
 
@@ -54,5 +54,5 @@ export default function useMutationToast<T, K>(
     };
   }, [customMessages, data, error, isError, isPending]);
 
-  return { ...mutation };
+  return { ...mutationFn };
 }

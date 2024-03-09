@@ -1,3 +1,11 @@
+export type ApiResponseUser<T> = {
+  resultMessage: {
+    en: string;
+  };
+  resultCode: string;
+  user: T;
+};
+
 export type ApiResponse<T> = {
   resultMessage: {
     en: string;
