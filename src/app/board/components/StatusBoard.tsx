@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { FaPlus } from 'react-icons/fa';
 
+import TicketBoard from '@/app/board/components/TicketBoard';
 import IconButton from '@/components/buttons/IconButton';
 import Typography from '@/components/Typography';
 import clsxm from '@/lib/clsxm';
+import { taskType } from '@/types/entities/task';
 
 type StatusBoardProps = {
   title: string;
-  ticketCount?: number;
+  data: taskType[] | null;
 };
 
-export default function StatusBoard({
-  title,
-  ticketCount = 0,
-}: StatusBoardProps) {
+export default function StatusBoard({ title, data }: StatusBoardProps) {
+  const ticketCount = data?.length;
   return (
     <div
       className={clsxm(
@@ -62,6 +62,9 @@ export default function StatusBoard({
               'bg-danger-300 hover:bg-danger-400 active:bg-danger-400',
           )}
         />
+      </div>
+      <div className='flex w-full flex-col gap-y-3 overflow-y-auto px-4 pb-4'>
+        {data?.map((task) => <TicketBoard key={task._id} data={task} />)}
       </div>
     </div>
   );
