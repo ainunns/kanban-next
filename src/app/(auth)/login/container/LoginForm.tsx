@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { useLoginMutation } from '@/app/(auth)/login/hooks/mutation';
 import Button from '@/components/buttons/Button';
 import Input from '@/components/forms/Input';
 
@@ -17,9 +18,12 @@ export default function LoginForm() {
 
   const { handleSubmit } = methods;
 
+  const { handleLogin, isPending } = useLoginMutation();
+
   const onSubmit = (data: LoginForm) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
+    handleLogin({
+      ...data,
+    });
   };
 
   return (
@@ -42,7 +46,12 @@ export default function LoginForm() {
             required: 'Password tidak boleh kosong!',
           }}
         />
-        <Button type='submit' variant='primary' className='w-full'>
+        <Button
+          type='submit'
+          variant='primary'
+          className='w-full'
+          isLoading={isPending}
+        >
           Login
         </Button>
       </form>
