@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import Loading from '@/components/Loading';
@@ -10,6 +10,8 @@ import useAuthStore from '@/store/useAuthStore';
 import { ApiResponseUser } from '@/types/api';
 import { PermissionListArray } from '@/types/entities/permission-list';
 import { UserType } from '@/types/entities/user';
+
+import { DANGER_TOAST, showToast } from '../Toast';
 
 type WithAuthProps = {
   user: UserType;
@@ -21,8 +23,6 @@ export default function withAuth<T>(
 ) {
   function ComponentWithAuth(props: Omit<T, keyof WithAuthProps>) {
     const router = useRouter();
-    const pathname = usePathname();
-    const redirect = useSearchParams().get('redirect');
 
     const { user, isAuthed, isLoading, login, logout, stopLoading } =
       useAuthStore();
@@ -35,64 +35,48 @@ export default function withAuth<T>(
         return;
       }
 
-      const loadUser = async () => {
-        try {
-          const newUser = await api.get<ApiResponseUser<UserType>>('/user');
-          if (!newUser) throw new Error('User tidak ditemukan');
-          login({ ...newUser.data.user, token });
-        } catch {
-          logout();
-        } finally {
-          stopLoading();
-        }
-      };
-
-      if (!isAuthed) {
-        loadUser();
+      if (isAuthed) {
+        stopLoading();
+        return;
       }
-    }, [isAuthed, login, logout, stopLoading]);
+
+      try {
+        const res = await api.get<ApiResponseUser<UserType>>('/user');
+        login({ ...res.data.user, token });
+      } catch {
+        logout();
+      } finally {
+        stopLoading();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthed]);
+
+    React.useEffect(() => {
+      if (
+        isLoading ||
+        permissions.includes('all') ||
+        (permissions.includes('authed') && isAuthed)
+      ) {
+        return;
+      }
+
+      if (!isAuthed || (user && !permissions.some((p) => p === user.type))) {
+        showToast('Anda tidak memiliki akses ke halaman ini', DANGER_TOAST);
+        router.replace('/login');
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isAuthed, isLoading]);
 
     React.useEffect(() => {
       checkAuth();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-      window.addEventListener('focus', checkAuth);
-
-      return () => {
-        window.removeEventListener('focus', checkAuth);
-      };
-    }, [checkAuth]);
-
-    React.useEffect(() => {
-      const Redirect = async () => {
-        if (isAuthed) {
-          if (permissions.includes('authed')) {
-            if (redirect) {
-              router.replace(redirect as string);
-            } else if (permissions.includes('user')) {
-              router.replace(`/board?redirect=${pathname}`);
-            }
-          }
-        } else {
-          if (
-            !permissions.includes('authed') &&
-            !permissions.includes('user')
-          ) {
-            router.replace(`/login?redirect=${pathname}`);
-          }
-        }
-      };
-      if (!isLoading) {
-        Redirect();
-      }
-    }, [isAuthed, isLoading, pathname, redirect, router]);
-
-    if (
-      (isLoading || !isAuthed) &&
-      !permissions.includes('authed') &&
-      !permissions.includes('user')
-    )
-      return <Loading />;
-
+    if (isLoading) return <Loading />;
+    else if (!isLoading && !isAuthed) {
+      router.replace('/login');
+      return;
+    }
     return <Component {...(props as T)} user={user} />;
   }
 
