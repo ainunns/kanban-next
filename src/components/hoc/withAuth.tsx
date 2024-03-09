@@ -13,11 +13,6 @@ import { UserType } from '@/types/entities/user';
 
 import { DANGER_TOAST, showToast } from '../Toast';
 
-async function getUser() {
-  const res = await api.get<ApiResponseUser<UserType>>('/user');
-  return res.data.user;
-}
-
 type WithAuthProps = {
   user: UserType;
 };
@@ -46,8 +41,8 @@ export default function withAuth<T>(
       }
 
       try {
-        const newUser = await getUser();
-        login({ ...newUser, token });
+        const res = await api.get<ApiResponseUser<UserType>>('/user');
+        login({ ...res.data.user, token });
       } catch {
         logout();
       } finally {
