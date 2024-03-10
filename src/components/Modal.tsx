@@ -83,7 +83,7 @@ export function ModalRoot({
                 <header className='flex items-center justify-between px-4 py-4 sm:px-6'>
                   <Typography
                     as={Dialog.Title}
-                    variant='h2'
+                    variant='h6'
                     className={clsxm('pr-2', titleClassName)}
                   >
                     {title}
