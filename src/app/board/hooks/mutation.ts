@@ -30,3 +30,15 @@ export const useDeleteTicketMutation = ({
   );
   return { handleDelete, isPending };
 };
+
+export type AddTicketFormType = {
+  title: string;
+  description: string;
+  dueDate: Date;
+  tags: string[];
+  status: string;
+};
+
+type AddTicketMutationType = {
+  refetch: () => void;
+};

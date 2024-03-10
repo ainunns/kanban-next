@@ -7,6 +7,8 @@ import Typography from '@/components/Typography';
 import clsxm from '@/lib/clsxm';
 import { taskType } from '@/types/entities/task';
 
+import AddTicketModal from '../container/modal/AddTicketModal';
+
 type StatusBoardProps = {
   title: string;
   data: taskType[] | null;
@@ -52,21 +54,26 @@ export default function StatusBoard({
             {ticketCount}
           </Typography>
         </div>
-        <IconButton
-          icon={FaPlus}
-          variant='outline'
-          className={clsxm(
-            'size-4 border-none font-normal',
-            title === 'Backlog' &&
-              'bg-primary-300 hover:bg-primary-400 active:bg-primary-400',
-            title === 'Ready' &&
-              'bg-success-300 hover:bg-success-400 active:bg-success-400',
-            title === 'In Progress' &&
-              'bg-warning-300 hover:bg-warning-400 active:bg-warning-400',
-            title === 'Done' &&
-              'bg-danger-300 hover:bg-danger-400 active:bg-danger-400',
+        <AddTicketModal refetch={refetch} status={title}>
+          {({ openModal }) => (
+            <IconButton
+              icon={FaPlus}
+              variant='outline'
+              className={clsxm(
+                'size-4 border-none font-normal',
+                title === 'Backlog' &&
+                  'bg-primary-300 hover:bg-primary-400 active:bg-primary-400',
+                title === 'Ready' &&
+                  'bg-success-300 hover:bg-success-400 active:bg-success-400',
+                title === 'In Progress' &&
+                  'bg-warning-300 hover:bg-warning-400 active:bg-warning-400',
+                title === 'Done' &&
+                  'bg-danger-300 hover:bg-danger-400 active:bg-danger-400',
+              )}
+              onClick={openModal}
+            />
           )}
-        />
+        </AddTicketModal>
       </div>
       <div className='flex w-full flex-col gap-y-3 overflow-y-auto px-4 pb-4'>
         {data?.map((task) => (
