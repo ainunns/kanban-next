@@ -11,7 +11,7 @@ import Typography from '@/components/Typography';
 
 export default withAuth(BoardContainer, ['user']);
 function BoardContainer() {
-  const { boardData, isLoading } = useGetTickets();
+  const { boardData, isLoading, refetch } = useGetTickets();
 
   if (isLoading) {
     return <Loading />;
@@ -50,10 +50,14 @@ function BoardContainer() {
         </Typography>
       </section>
       <section className='mx-auto grid w-11/12 grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
-        <StatusBoard title='Backlog' data={backlogTickets} />
-        <StatusBoard title='Ready' data={readyTickets} />
-        <StatusBoard title='In Progress' data={inProgressTickets} />
-        <StatusBoard title='Done' data={doneTickets} />
+        <StatusBoard title='Backlog' data={backlogTickets} refetch={refetch} />
+        <StatusBoard title='Ready' data={readyTickets} refetch={refetch} />
+        <StatusBoard
+          title='In Progress'
+          data={inProgressTickets}
+          refetch={refetch}
+        />
+        <StatusBoard title='Done' data={doneTickets} refetch={refetch} />
       </section>
     </main>
   );

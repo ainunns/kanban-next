@@ -9,10 +9,15 @@ import clsxm from '@/lib/clsxm';
 import { randomColor, showFormattedDate } from '@/lib/helper';
 import { taskType } from '@/types/entities/task';
 
-export default function TicketBoard({ data }: { data: taskType | null }) {
+type TicketBoardProps = {
+  data: taskType | null;
+  refetch: () => void;
+};
+
+export default function TicketBoard({ data, refetch }: TicketBoardProps) {
   const tags = data?.tags;
   return (
-    <div className='flex w-full flex-col gap-y-4 rounded-xl bg-typo-white p-4 shadow-md'>
+    <div className='flex w-full flex-col gap-y-3 rounded-xl bg-typo-white p-4 shadow-md'>
       <div className='flex flex-row items-center justify-between gap-x-6'>
         <div className='flex flex-row flex-wrap gap-x-2'>
           {tags?.map((tag) => (
@@ -29,7 +34,7 @@ export default function TicketBoard({ data }: { data: taskType | null }) {
         />
       </div>
       <div className='flex flex-col gap-1'>
-        <DetailModal data={data}>
+        <DetailModal data={data} refetch={refetch}>
           {({ openModal }) => (
             <Typography
               as='h3'

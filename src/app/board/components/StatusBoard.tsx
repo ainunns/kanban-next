@@ -10,9 +10,14 @@ import { taskType } from '@/types/entities/task';
 type StatusBoardProps = {
   title: string;
   data: taskType[] | null;
+  refetch: () => void;
 };
 
-export default function StatusBoard({ title, data }: StatusBoardProps) {
+export default function StatusBoard({
+  title,
+  data,
+  refetch,
+}: StatusBoardProps) {
   const ticketCount = data?.length;
   return (
     <div
@@ -64,7 +69,9 @@ export default function StatusBoard({ title, data }: StatusBoardProps) {
         />
       </div>
       <div className='flex w-full flex-col gap-y-3 overflow-y-auto px-4 pb-4'>
-        {data?.map((task) => <TicketBoard key={task._id} data={task} />)}
+        {data?.map((task) => (
+          <TicketBoard key={task._id} data={task} refetch={refetch} />
+        ))}
       </div>
     </div>
   );
