@@ -61,7 +61,7 @@ export default function TextArea({
           onChange={handleChange}
           className={clsxm(
             'w-full rounded-md px-3 py-2.5',
-            'border-none ring-1 ring-typo-icon focus:ring-2',
+            'border-none ring-1 focus:ring-2',
             'bg-transparent font-poppins text-typo-primary',
             'placeholder:font-poppins placeholder:text-typo-icon',
             readOnly && 'cursor-not-allowed',

@@ -41,4 +41,27 @@ export type AddTicketFormType = {
 
 type AddTicketMutationType = {
   refetch: () => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const useAddTicketMutation = ({
+  refetch,
+  setOpen,
+}: AddTicketMutationType) => {
+  const { mutateAsync: handleAdd, isPending } = useMutationToast<
+    void,
+    AddTicketFormType
+  >(
+    useMutation({
+      mutationFn: async (data) => {
+        await api.post('/task', data);
+      },
+      onSuccess: () => {
+        showToast('Ticket berhasil ditambahkan', SUCCESS_TOAST);
+        refetch();
+        setOpen(false);
+      },
+    }),
+  );
+  return { handleAdd, isPending };
 };

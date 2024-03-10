@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { AddTicketFormType } from '@/app/board/hooks/mutation';
+import {
+  AddTicketFormType,
+  useAddTicketMutation,
+} from '@/app/board/hooks/mutation';
 import Button from '@/components/buttons/Button';
 import DatePicker from '@/components/forms/DatePicker';
 import Input from '@/components/forms/Input';
@@ -35,14 +38,22 @@ export default function AddTicketModal({
       description: '',
       dueDate: new Date(),
       tags: [],
-      status: status,
+      status,
     },
   });
 
   const { handleSubmit } = methods;
 
+  const { handleAdd, isPending } = useAddTicketMutation({
+    refetch,
+    setOpen,
+  });
+
   const onSubmit = (data: AddTicketFormType) => {
-    console.log(data);
+    handleAdd({
+      ...data,
+      status: status.toLowerCase(),
+    });
   };
 
   return (
@@ -90,32 +101,33 @@ export default function AddTicketModal({
               />
               <SelectInput
                 id='tags'
-                label='Tag'
-                placeholder='Tambah Tag'
+                label='Tags'
+                options={SELECT_OPTIONS.tags}
+                isMulti={true}
+                placeholder='Tambah tag'
                 validation={{
                   required: 'Tag tidak boleh kosong',
                 }}
-              >
-                {SELECT_OPTIONS.tags.map((tag) => (
-                  <option key={tag.label} value={tag.value}>
-                    {tag.label}
-                  </option>
-                ))}
-              </SelectInput>
+              />
+              <div className='mt-5 flex justify-end gap-3'>
+                <Button
+                  variant='outline'
+                  className='text-success-500'
+                  onClick={() => setOpen(false)}
+                >
+                  Batal
+                </Button>
+                <Button
+                  type='submit'
+                  variant='success'
+                  className='border-none text-typo-primary'
+                  isLoading={isPending}
+                >
+                  Simpan
+                </Button>
+              </div>
             </form>
           </FormProvider>
-          <div className='mt-5 flex justify-end gap-3'>
-            <Button
-              variant='outline'
-              className='text-success-500'
-              onClick={() => setOpen(false)}
-            >
-              Batal
-            </Button>
-            <Button variant='success' className='border-none text-typo-primary'>
-              Simpan
-            </Button>
-          </div>
         </Modal.Section>
       </Modal>
     </>
