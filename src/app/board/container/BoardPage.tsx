@@ -43,9 +43,9 @@ function BoardContainer() {
           className='flex items-end gap-1'
         >
           A board to keep track of projects and tasks. Built with Next.js,
-          TypeScript, and Tailwind CSS by{' '}
+          TypeScript, and Tailwind CSS by
           <PrimaryLink href='https://github.com/ainunns'>
-            <FaGithub /> {'ainunns'}
+            <FaGithub className='mx-1' /> {'ainunns'}
           </PrimaryLink>
         </Typography>
       </section>
