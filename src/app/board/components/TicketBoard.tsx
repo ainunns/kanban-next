@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { FaCalendar, FaEdit } from 'react-icons/fa';
 
+import DetailModal from '@/app/board/container/modal/DetailModal';
 import IconButton from '@/components/buttons/IconButton';
 import Chips from '@/components/Chips';
-import UnderlineLink from '@/components/links/UnderlineLink';
 import Typography from '@/components/Typography';
+import clsxm from '@/lib/clsxm';
 import { randomColor, showFormattedDate } from '@/lib/helper';
 import { taskType } from '@/types/entities/task';
 
@@ -28,11 +29,23 @@ export default function TicketBoard({ data }: { data: taskType | null }) {
         />
       </div>
       <div className='flex flex-col gap-1'>
-        <UnderlineLink href={`/board/${data?._id}`} className='w-fit'>
-          <Typography as='h3' variant='bt' weight='semibold'>
-            {data?.title}
-          </Typography>
-        </UnderlineLink>
+        <DetailModal data={data}>
+          {({ openModal }) => (
+            <Typography
+              as='h3'
+              variant='bt'
+              weight='semibold'
+              className={clsxm(
+                'animated-underline custom-link inline-flex w-fit items-center font-medium',
+                'focus:outline-none focus-visible:rounded focus-visible:ring focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+                'border-dark border-b border-dotted hover:cursor-pointer hover:border-black/0',
+              )}
+              onClick={openModal}
+            >
+              {data?.title}
+            </Typography>
+          )}
+        </DetailModal>
         <Typography variant='c1' weight='regular' color='icon'>
           {data?.description}
         </Typography>
