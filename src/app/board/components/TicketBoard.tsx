@@ -2,6 +2,7 @@ import * as React from 'react';
 import { FaCalendar, FaEdit } from 'react-icons/fa';
 
 import DetailModal from '@/app/board/container/modal/DetailModal';
+import EditTicketModal from '@/app/board/container/modal/EditTicketModal';
 import IconButton from '@/components/buttons/IconButton';
 import Chips from '@/components/Chips';
 import Typography from '@/components/Typography';
@@ -26,12 +27,17 @@ export default function TicketBoard({ data, refetch }: TicketBoardProps) {
             </Chips>
           ))}
         </div>
-        <IconButton
-          icon={FaEdit}
-          variant='outline'
-          iconClassName='size-4'
-          className='border-2 border-primary-500 font-normal'
-        />
+        <EditTicketModal refetch={refetch} data={data}>
+          {({ openModal }) => (
+            <IconButton
+              icon={FaEdit}
+              variant='outline'
+              iconClassName='size-4'
+              className='border-2 border-primary-500 font-normal'
+              onClick={openModal}
+            />
+          )}
+        </EditTicketModal>
       </div>
       <div className='flex flex-col gap-1'>
         <DetailModal data={data} refetch={refetch}>

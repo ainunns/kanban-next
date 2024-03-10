@@ -3,7 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import {
   TicketFormType,
-  useAddTicketMutation,
+  useEditTicketMutation,
 } from '@/app/board/hooks/mutation';
 import Button from '@/components/buttons/Button';
 import DatePicker from '@/components/forms/DatePicker';
@@ -12,18 +12,19 @@ import SelectInput from '@/components/forms/SelectInput';
 import TextArea from '@/components/forms/TextArea';
 import Modal from '@/components/Modal';
 import { SELECT_OPTIONS } from '@/constant/select-options';
+import { taskType } from '@/types/entities/task';
 
 type ModalReturnType = {
   openModal: () => void;
 };
 
-export default function AddTicketModal({
+export default function EditTicketModal({
   refetch,
-  status,
+  data,
   children,
 }: {
   refetch: () => void;
-  status: string;
+  data: taskType | null;
   children: (props: ModalReturnType) => JSX.Element;
 }) {
   const [open, setOpen] = React.useState(false);
@@ -34,26 +35,24 @@ export default function AddTicketModal({
   const methods = useForm<TicketFormType>({
     mode: 'onTouched',
     defaultValues: {
-      title: '',
-      description: '',
-      dueDate: new Date(),
-      tags: [],
-      status,
+      title: data?.title || '',
+      description: data?.description || '',
+      dueDate: data?.dueDate || new Date(),
+      tags: data?.tags || [],
+      status: data?.status,
     },
   });
 
   const { handleSubmit } = methods;
 
-  const { handleAdd, isPending } = useAddTicketMutation({
+  const { handleEdit, isPending } = useEditTicketMutation({
     refetch,
     setOpen,
+    id: data?._id || '',
   });
 
   const onSubmit = (data: TicketFormType) => {
-    handleAdd({
-      ...data,
-      status: status.toLowerCase(),
-    });
+    handleEdit(data);
   };
 
   return (
