@@ -107,7 +107,7 @@ export default function Input({
               readOnly && 'cursor-not-allowed',
               error
                 ? 'border-none ring-1 ring-inset ring-danger-500 focus:ring-danger-500 '
-                : 'focus:ring-typo-primary',
+                : 'focus:ring-primary-500',
               prefix && 'rounded-l-none rounded-r-md',
               suffix && 'rounded-l-md rounded-r-none',
               prefix && suffix && 'rounded-none',

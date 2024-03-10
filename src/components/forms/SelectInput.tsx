@@ -1,88 +1,242 @@
-import * as React from 'react';
-import { get, RegisterOptions, useFormContext } from 'react-hook-form';
-import { FiChevronDown } from 'react-icons/fi';
+'use client';
+import clsx from 'clsx';
+import get from 'lodash.get';
+import { Controller, RegisterOptions, useFormContext } from 'react-hook-form';
+import { BiChevronDown, BiX } from 'react-icons/bi';
+import Select, { components, MultiValue, StylesConfig } from 'react-select';
 
 import ErrorMessage from '@/components/forms/ErrorMessage';
 import HelperText from '@/components/forms/HelperText';
 import LabelText from '@/components/forms/LabelText';
-import clsxm from '@/lib/clsxm';
+import { ExtractProps } from '@/types/helper';
 
-export type SelectInputProps = {
+export type SearchableSelectInputProps = {
+  label: string | null;
   id: string;
-  label?: string;
+  placeholder?: React.ReactNode;
   helperText?: string;
+  type?: string;
+  isMulti?: boolean;
+  readOnly?: boolean;
   hideError?: boolean;
   validation?: RegisterOptions;
-  readOnly?: boolean;
-  placeholder?: string;
-} & React.ComponentPropsWithoutRef<'select'>;
+  options: { value: string; label: string }[];
+  containerClassName?: string;
+} & React.ComponentPropsWithoutRef<'select'> &
+  ExtractProps<Select>;
 
 export default function SelectInput({
-  id,
+  disabled,
+  readOnly,
   label,
   helperText,
-  hideError = false,
+  id,
+  isMulti = false,
+  placeholder,
   validation,
-  className,
-  readOnly = false,
-  defaultValue = '',
-  placeholder = '',
-  children,
+  options,
+  hideError = false,
+  containerClassName,
   ...rest
-}: SelectInputProps) {
+}: SearchableSelectInputProps) {
   const {
-    register,
+    control,
     formState: { errors },
-    watch,
   } = useFormContext();
-
   const error = get(errors, id);
-  const value = watch(id);
+
+  const withLabel = label !== null;
+
+  //#region  //*=========== Styles ===========
+  const customStyles: StylesConfig = {
+    control: (styles) => ({
+      ...styles,
+      // red-500 and gray-300
+      border: `1px solid ${error ? '#EF4444' : '#D1D5DB'}`,
+      '&:hover': {
+        border: `1px solid ${error ? '#EF4444' : '#D1D5DB'}`,
+      },
+      boxShadow: 'none',
+      transition: 'none',
+      '&:focus-within': {
+        border: `1px solid ${error ? '#EF4444' : 'var(--color-primary-500)'}`,
+        boxShadow: `0 0 0 1px ${
+          error ? '#EF4444' : 'var(--color-primary-500)'
+        }`,
+      },
+      '*': {
+        boxShadow: 'none !important',
+      },
+      borderRadius: '0.5rem',
+      padding: '0 0.75rem',
+      background: disabled || readOnly ? '#F3F4F6' : undefined,
+      cursor: 'pointer',
+    }),
+    valueContainer: (styles) => ({
+      ...styles,
+      padding: 0,
+      gap: '0.5rem',
+    }),
+    input: (styles) => ({
+      ...styles,
+      padding: 0,
+      margin: 0,
+      caretColor: 'var(--color-primary-500)',
+      color: '#1F201d',
+      '::placeholder': {
+        color: '#5a5d56',
+      },
+    }),
+    indicatorsContainer: (styles) => ({
+      ...styles,
+      '&>div': {
+        padding: 0,
+      },
+    }),
+    dropdownIndicator: (styles) => ({
+      ...styles,
+      color: '#878787',
+      '&:hover': {
+        color: '#878787',
+      },
+    }),
+    option: (styles, state) => ({
+      ...styles,
+      color: 'black',
+      background: state.isFocused
+        ? 'var(--color-primary-50)'
+        : state.isSelected
+          ? 'var(--color-primary-100)'
+          : 'white',
+      ':hover': {
+        background: '#E5E7EB',
+      },
+      cursor: 'pointer',
+    }),
+    multiValue: (styles) => ({
+      ...styles,
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.25rem',
+      background: 'var(--color-primary-100)',
+      borderRadius: '0.375rem',
+      padding: '0.25rem 0.75rem',
+      margin: 0,
+    }),
+    multiValueLabel: (styles) => ({
+      ...styles,
+      color: 'var(--color-primary-700)',
+      padding: 0,
+      paddingLeft: 0,
+    }),
+    multiValueRemove: (styles) => ({
+      ...styles,
+      color: 'var(--color-primary-700)',
+      padding: 0,
+      paddingLeft: '0.5rem',
+      '&:hover': {
+        color: 'var(--color-primary-700)',
+        backgroundColor: 'transparent',
+      },
+    }),
+    menu: (styles) => ({
+      ...styles,
+      borderRadius: '0.5rem',
+      overflow: 'hidden',
+    }),
+  };
+
+  //#endregion  //*======== Styles ===========
 
   return (
-    <div className='w-full space-y-1.5 rounded-md'>
+    <div className={containerClassName}>
       {label && (
         <LabelText required={validation?.required ? true : false}>
           {label}
         </LabelText>
       )}
-
-      <div className='relative'>
-        <select
-          {...register(id, validation)}
-          id={id}
+      <div
+        className={clsx(
+          'relative',
+          withLabel && 'mt-1',
+          (disabled || readOnly) && 'cursor-not-allowed',
+        )}
+      >
+        <Controller
           name={id}
-          defaultValue={defaultValue}
-          disabled={readOnly}
-          className={clsxm(
-            'w-full appearance-none truncate rounded-md border-none py-2.5 pl-3 pr-8',
-            'ring-1 ring-typo-outline focus:ring-typo-outline',
-            'bg-typo-white font-poppins text-sm text-typo-secondary',
-            'hover:ring-2 hover:ring-typo-primary',
-            readOnly && 'cursor-not-allowed',
-            error
-              ? 'ring-1 ring-inset ring-danger-500 focus:ring-danger-500'
-              : 'focus:ring-typo-outline',
-            value && 'ring-primary-500 focus:ring-primary-500',
-            className,
-          )}
-          aria-describedby={id}
-          {...rest}
-        >
-          {placeholder && (
-            <option value='' disabled hidden>
-              {placeholder}
-            </option>
-          )}
-          {children}
-        </select>
-        <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
-          <FiChevronDown className='text-xl text-typo-outline' />
-        </div>
+          control={control}
+          rules={validation}
+          render={({ field }) => {
+            return (
+              <Select
+                {...field}
+                value={
+                  //? null is needed so if the selected value is not found in the options, it will clear the value
+                  isMulti
+                    ? field.value?.map(
+                        (value: unknown) =>
+                          options.find((option) => option.value === value) ??
+                          null,
+                      )
+                    : options.find((opt) => opt.value === field.value) ?? null
+                }
+                onChange={(selectedOptions) => {
+                  isMulti
+                    ? field.onChange(
+                        (
+                          selectedOptions as MultiValue<
+                            (typeof options)[number]
+                          >
+                        ).map((option) => option?.value ?? ''),
+                      )
+                    : field.onChange(
+                        (selectedOptions as (typeof options)[number])?.value ??
+                          '',
+                      );
+                }}
+                isDisabled={disabled}
+                isClearable
+                isMulti={isMulti}
+                closeMenuOnSelect={!isMulti}
+                placeholder={placeholder}
+                options={options}
+                classNames={{
+                  control: () => '!min-h-[2.25rem] md:!min-h-[2.5rem]',
+                }}
+                styles={customStyles}
+                components={{
+                  IndicatorSeparator: () => null,
+                  DropdownIndicator: (props) => (
+                    <components.DropdownIndicator {...props}>
+                      <BiChevronDown size={18} />
+                    </components.DropdownIndicator>
+                  ),
+                  ClearIndicator: (props) => (
+                    <components.ClearIndicator {...props}>
+                      <BiX
+                        size={18}
+                        className='text-typo-icons mr-0.5 hover:text-typo-secondary'
+                      />
+                    </components.ClearIndicator>
+                  ),
+                  MultiValueRemove: (props) => (
+                    <components.MultiValueRemove {...props}>
+                      <BiX size={18} />
+                    </components.MultiValueRemove>
+                  ),
+                }}
+                {...rest}
+              />
+            );
+          }}
+        />
+        {helperText && (
+          <HelperText helperTextClassName='mt-1'>{helperText}</HelperText>
+        )}
+        {!hideError && error && (
+          <ErrorMessage>{error?.message?.toString() ?? ''}</ErrorMessage>
+        )}
       </div>
-
-      {!hideError && error && <ErrorMessage>{error.message}</ErrorMessage>}
-      {!error && helperText && <HelperText>{helperText}</HelperText>}
     </div>
   );
 }

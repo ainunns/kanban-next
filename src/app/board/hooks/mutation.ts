@@ -30,3 +30,38 @@ export const useDeleteTicketMutation = ({
   );
   return { handleDelete, isPending };
 };
+
+export type AddTicketFormType = {
+  title: string;
+  description: string;
+  dueDate: Date;
+  tags: string[];
+  status: string;
+};
+
+type AddTicketMutationType = {
+  refetch: () => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+export const useAddTicketMutation = ({
+  refetch,
+  setOpen,
+}: AddTicketMutationType) => {
+  const { mutateAsync: handleAdd, isPending } = useMutationToast<
+    void,
+    AddTicketFormType
+  >(
+    useMutation({
+      mutationFn: async (data) => {
+        await api.post('/task', data);
+      },
+      onSuccess: () => {
+        showToast('Ticket berhasil ditambahkan', SUCCESS_TOAST);
+        refetch();
+        setOpen(false);
+      },
+    }),
+  );
+  return { handleAdd, isPending };
+};
