@@ -14,7 +14,7 @@ type ModalReturnType = {
   openModal: () => void;
 };
 
-export default function DetailModal({
+export default function DetailTicketModal({
   data,
   refetch,
   children,

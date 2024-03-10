@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FaCalendar, FaEdit } from 'react-icons/fa';
 
-import DetailModal from '@/app/board/container/modal/DetailModal';
+import DetailTicketModal from '@/app/board/container/modal/DetailTicketModal';
 import EditTicketModal from '@/app/board/container/modal/EditTicketModal';
 import IconButton from '@/components/buttons/IconButton';
 import Chips from '@/components/Chips';
@@ -20,7 +20,7 @@ export default function TicketBoard({ data, refetch }: TicketBoardProps) {
   return (
     <div className='flex w-full flex-col gap-y-3 rounded-xl bg-typo-white p-4 shadow-md'>
       <div className='flex flex-row items-center justify-between gap-x-6'>
-        <div className='flex flex-row flex-wrap gap-x-2'>
+        <div className='flex flex-row flex-wrap gap-2'>
           {tags?.map((tag) => (
             <Chips key={tag} color={randomColor()} size='sm'>
               {tag}
@@ -40,7 +40,7 @@ export default function TicketBoard({ data, refetch }: TicketBoardProps) {
         </EditTicketModal>
       </div>
       <div className='flex flex-col gap-1'>
-        <DetailModal data={data} refetch={refetch}>
+        <DetailTicketModal data={data} refetch={refetch}>
           {({ openModal }) => (
             <Typography
               as='h3'
@@ -56,7 +56,7 @@ export default function TicketBoard({ data, refetch }: TicketBoardProps) {
               {data?.title}
             </Typography>
           )}
-        </DetailModal>
+        </DetailTicketModal>
         <Typography variant='c1' weight='regular' color='icon'>
           {data?.description}
         </Typography>
